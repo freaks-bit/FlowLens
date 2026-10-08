@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.db.session import engine
 
 app = FastAPI(
     title="FlowLens API",
@@ -20,6 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def root():
     return {
@@ -28,9 +33,22 @@ def root():
         "status": "running",
     }
 
+
 @app.get("/api/v1/health")
 def health_check():
-    return {
-        "status": "healthy",
-        "service": "flowlens-api",
-    }
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+
+        return {
+            "status": "healthy",
+            "service": "flowlens-api",
+            "database": "connected",
+        }
+
+    except SQLAlchemyError:
+        return {
+            "status": "degraded",
+            "service": "flowlens-api",
+            "database": "unavailable",
+        }

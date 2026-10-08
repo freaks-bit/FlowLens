@@ -47,5 +47,16 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
+}
+
+.status-checking .status-dot {
+  background: #fde68a;
+}
+
+.status-online .status-dot {
   background: #86efac;
+}
+
+.status-offline .status-dot {
+  background: #fca5a5;
 }

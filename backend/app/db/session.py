@@ -16,6 +16,10 @@ database_url = URL.create(
 engine = create_engine(
     database_url,
     pool_pre_ping=True,
+    connect_args={
+        "connect_timeout": 3,
+    },
+    pool_timeout=3,
 )
 
 SessionLocal = sessionmaker(

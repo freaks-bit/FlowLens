@@ -24,7 +24,6 @@ class SensorUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=2, max_length=160)
     status: SensorStatus | None = None
     installed_at: datetime | None = None
-    last_seen_at: datetime | None = None
     is_active: bool | None = None
 
 

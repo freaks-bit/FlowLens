@@ -1,4 +1,5 @@
 import {
+  type ChangeEvent,
   useCallback,
   useEffect,
   useState,
@@ -23,7 +24,26 @@ import type {
 
 const SITE_ID = 1
 const DEFAULT_HISTORY_ZONE_ID = 1
-const HISTORY_DAYS = 14
+const DEFAULT_HISTORY_DAYS = 14
+
+const HISTORY_RANGE_OPTIONS = [
+  {
+    label: '24 hours',
+    days: 1,
+  },
+  {
+    label: '7 days',
+    days: 7,
+  },
+  {
+    label: '14 days',
+    days: 14,
+  },
+  {
+    label: '30 days',
+    days: 30,
+  },
+]
 
 function formatPercent(value: number) {
   return `${value.toFixed(2)}%`
@@ -38,12 +58,12 @@ function statusLabel(
   return 'Normal'
 }
 
-function getHistoryRange() {
+function getHistoryRange(days: number) {
   const endAt = new Date()
 
   const startAt = new Date(
     endAt.getTime() -
-      HISTORY_DAYS * 24 * 60 * 60 * 1000,
+      days * 24 * 60 * 60 * 1000,
   )
 
   return {
@@ -67,6 +87,11 @@ function App() {
     setSelectedHistoryZoneId,
   ] = useState(DEFAULT_HISTORY_ZONE_ID)
 
+  const [
+    selectedHistoryDays,
+    setSelectedHistoryDays,
+  ] = useState(DEFAULT_HISTORY_DAYS)
+
   const [loading, setLoading] = useState(true)
 
   const [refreshing, setRefreshing] =
@@ -84,7 +109,7 @@ function App() {
   const fetchDashboard = useCallback(async () => {
     try {
       const { startAt, endAt } =
-        getHistoryRange()
+        getHistoryRange(selectedHistoryDays)
 
       setHistoryLoading(true)
 
@@ -120,7 +145,10 @@ function App() {
       setRefreshing(false)
       setHistoryLoading(false)
     }
-  }, [selectedHistoryZoneId])
+  }, [
+    selectedHistoryZoneId,
+    selectedHistoryDays,
+  ])
 
   const handleRefresh = () => {
     setRefreshing(true)
@@ -130,7 +158,7 @@ function App() {
   }
 
   const handleHistoryZoneChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: ChangeEvent<HTMLSelectElement>,
   ) => {
     setSelectedHistoryZoneId(
       Number(event.target.value),
@@ -327,34 +355,69 @@ function App() {
               </div>
 
               <div className="history-controls">
-                <label
-                  htmlFor="history-zone"
-                  className="history-control-label"
-                >
-                  Historical zone
-                </label>
+                <div className="history-control">
+                  <label
+                    htmlFor="history-zone"
+                    className="history-control-label"
+                  >
+                    Historical zone
+                  </label>
 
-                <select
-                  id="history-zone"
-                  className="history-zone-select"
-                  value={selectedHistoryZoneId}
-                  onChange={handleHistoryZoneChange}
-                  disabled={historyLoading}
-                >
-                  {site.zones.map((zone) => (
-                    <option
-                      key={zone.zone_id}
-                      value={zone.zone_id}
-                    >
-                      Zone {zone.zone_id} —{' '}
-                      {zone.zone_name}
-                    </option>
-                  ))}
-                </select>
+                  <select
+                    id="history-zone"
+                    className="history-zone-select"
+                    value={selectedHistoryZoneId}
+                    onChange={
+                      handleHistoryZoneChange
+                    }
+                    disabled={historyLoading}
+                  >
+                    {site.zones.map((zone) => (
+                      <option
+                        key={zone.zone_id}
+                        value={zone.zone_id}
+                      >
+                        Zone {zone.zone_id} —{' '}
+                        {zone.zone_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                <span className="history-range">
-                  Last {HISTORY_DAYS} days
-                </span>
+                <div className="history-control">
+                  <span className="history-control-label">
+                    Time range
+                  </span>
+
+                  <div className="history-range-buttons">
+                    {HISTORY_RANGE_OPTIONS.map(
+                      (option) => (
+                        <button
+                          key={option.days}
+                          type="button"
+                          className={`history-range-button ${
+                            selectedHistoryDays ===
+                            option.days
+                              ? 'history-range-active'
+                              : ''
+                          }`}
+                          onClick={() =>
+                            setSelectedHistoryDays(
+                              option.days,
+                            )
+                          }
+                          disabled={historyLoading}
+                          aria-pressed={
+                            selectedHistoryDays ===
+                            option.days
+                          }
+                        >
+                          {option.label}
+                        </button>
+                      ),
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -363,7 +426,7 @@ function App() {
                 <div className="small-spinner" />
 
                 <span>
-                  Loading zone history...
+                  Loading historical data...
                 </span>
               </div>
             ) : history ? (

@@ -302,15 +302,22 @@ button {
 
 .history-controls {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: flex-end;
   justify-content: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.history-control {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
 
 .history-control-label {
   color: #8493b2;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .history-zone-select {
@@ -346,10 +353,48 @@ button {
   background: #0f172a;
 }
 
-.history-range {
-  color: #70809f;
-  font-size: 0.8rem;
+.history-range-buttons {
+  display: flex;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid
+    rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  background:
+    rgba(15, 23, 42, 0.72);
+}
+
+.history-range-button {
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #8493b2;
+  background: transparent;
+  font-size: 0.78rem;
   white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.history-range-button:hover:not(:disabled) {
+  color: #dffdf8;
+  background:
+    rgba(94, 234, 212, 0.07);
+}
+
+.history-range-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.history-range-active {
+  color: #dffdf8;
+  border-color:
+    rgba(94, 234, 212, 0.28);
+  background:
+    rgba(13, 148, 136, 0.2);
 }
 
 .history-card {
@@ -578,6 +623,17 @@ button {
   color: #f8fafc;
 }
 
+@media (max-width: 1000px) {
+  .history-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .history-controls {
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 900px) {
   .metric-grid {
     grid-template-columns:
@@ -594,15 +650,6 @@ button {
 
   .history-card-header {
     flex-direction: column;
-  }
-
-  .history-section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .history-controls {
-    justify-content: flex-start;
   }
 }
 
@@ -631,6 +678,16 @@ button {
   .history-zone-select {
     width: 100%;
     min-width: 0;
+  }
+
+  .history-range-buttons {
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .history-range-button {
+    width: 100%;
   }
 
   .history-summary-grid {

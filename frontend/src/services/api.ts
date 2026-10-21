@@ -2,6 +2,7 @@ import type {
   HealthResponse,
   SiteOccupancy,
   ZoneOccupancy,
+  ZoneOccupancyHistory,
 } from '../types/analytics'
 
 const API_BASE_URL =
@@ -37,7 +38,7 @@ export function getSiteOccupancy(
   siteId: number,
 ): Promise<SiteOccupancy> {
   return apiRequest<SiteOccupancy>(
-    `/api/v1/analytics/sites/${siteId}/occupancy`,
+    `/api/v1/sites/${siteId}/occupancy`,
   )
 }
 
@@ -45,6 +46,21 @@ export function getZoneOccupancy(
   zoneId: number,
 ): Promise<ZoneOccupancy> {
   return apiRequest<ZoneOccupancy>(
-    `/api/v1/analytics/zones/${zoneId}/occupancy`,
+    `/api/v1/zones/${zoneId}/occupancy`,
+  )
+}
+
+export function getZoneOccupancyHistory(
+  zoneId: number,
+  startAt: string,
+  endAt: string,
+): Promise<ZoneOccupancyHistory> {
+  const params = new URLSearchParams({
+    start_at: startAt,
+    end_at: endAt,
+  })
+
+  return apiRequest<ZoneOccupancyHistory>(
+    `/api/v1/zones/${zoneId}/history?${params.toString()}`,
   )
 }

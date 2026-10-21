@@ -20,6 +20,19 @@ export interface SiteOccupancy {
   zones: ZoneOccupancy[]
 }
 
+export interface OccupancyHistoryPoint {
+  timestamp: string
+  occupancy: number
+}
+
+export interface ZoneOccupancyHistory {
+  zone_id: number
+  zone_name: string
+  start_at: string
+  end_at: string
+  points: OccupancyHistoryPoint[]
+}
+
 export interface HealthResponse {
   status: string
   service: string

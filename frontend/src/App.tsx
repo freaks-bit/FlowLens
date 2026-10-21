@@ -22,7 +22,7 @@ import type {
 } from './types/analytics'
 
 const SITE_ID = 1
-const HISTORY_ZONE_ID = 1
+const DEFAULT_HISTORY_ZONE_ID = 1
 const HISTORY_DAYS = 14
 
 function formatPercent(value: number) {
@@ -62,9 +62,17 @@ function App() {
   const [history, setHistory] =
     useState<ZoneOccupancyHistory | null>(null)
 
+  const [
+    selectedHistoryZoneId,
+    setSelectedHistoryZoneId,
+  ] = useState(DEFAULT_HISTORY_ZONE_ID)
+
   const [loading, setLoading] = useState(true)
 
   const [refreshing, setRefreshing] =
+    useState(false)
+
+  const [historyLoading, setHistoryLoading] =
     useState(false)
 
   const [error, setError] =
@@ -78,6 +86,8 @@ function App() {
       const { startAt, endAt } =
         getHistoryRange()
 
+      setHistoryLoading(true)
+
       const [
         healthResult,
         siteResult,
@@ -86,7 +96,7 @@ function App() {
         getHealth(),
         getSiteOccupancy(SITE_ID),
         getZoneOccupancyHistory(
-          HISTORY_ZONE_ID,
+          selectedHistoryZoneId,
           startAt,
           endAt,
         ),
@@ -108,14 +118,23 @@ function App() {
     } finally {
       setLoading(false)
       setRefreshing(false)
+      setHistoryLoading(false)
     }
-  }, [])
+  }, [selectedHistoryZoneId])
 
   const handleRefresh = () => {
     setRefreshing(true)
     setError(null)
 
     void fetchDashboard()
+  }
+
+  const handleHistoryZoneChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setSelectedHistoryZoneId(
+      Number(event.target.value),
+    )
   }
 
   useEffect(() => {
@@ -139,7 +158,10 @@ function App() {
     return (
       <main className="app-shell center-state">
         <div className="spinner" />
-        <p>Loading FlowLens analytics...</p>
+
+        <p>
+          Loading FlowLens analytics...
+        </p>
       </main>
     )
   }
@@ -290,29 +312,72 @@ function App() {
             </article>
           </section>
 
-          {history && (
-            <section className="history-section">
-              <div className="section-heading">
-                <div>
-                  <p className="section-kicker">
-                    HISTORICAL ANALYTICS
-                  </p>
-
-                  <h2>
-                    {history.zone_name} occupancy
-                  </h2>
-                </div>
-
-                <p className="updated-text">
-                  Last {HISTORY_DAYS} days
+          <section className="history-section">
+            <div className="history-section-heading">
+              <div>
+                <p className="section-kicker">
+                  HISTORICAL ANALYTICS
                 </p>
+
+                <h2>
+                  {history
+                    ? `${history.zone_name} occupancy`
+                    : 'Zone occupancy'}
+                </h2>
               </div>
 
+              <div className="history-controls">
+                <label
+                  htmlFor="history-zone"
+                  className="history-control-label"
+                >
+                  Historical zone
+                </label>
+
+                <select
+                  id="history-zone"
+                  className="history-zone-select"
+                  value={selectedHistoryZoneId}
+                  onChange={handleHistoryZoneChange}
+                  disabled={historyLoading}
+                >
+                  {site.zones.map((zone) => (
+                    <option
+                      key={zone.zone_id}
+                      value={zone.zone_id}
+                    >
+                      Zone {zone.zone_id} —{' '}
+                      {zone.zone_name}
+                    </option>
+                  ))}
+                </select>
+
+                <span className="history-range">
+                  Last {HISTORY_DAYS} days
+                </span>
+              </div>
+            </div>
+
+            {historyLoading && history ? (
+              <div className="history-loading-card">
+                <div className="small-spinner" />
+
+                <span>
+                  Loading zone history...
+                </span>
+              </div>
+            ) : history ? (
               <OccupancyHistoryChart
                 history={history}
               />
-            </section>
-          )}
+            ) : (
+              <div className="history-loading-card">
+                <span>
+                  Historical data is unavailable.
+                </span>
+              </div>
+            )}
+          </section>
 
           <section className="zones-section">
             <div className="section-heading">

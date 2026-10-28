@@ -1,10 +1,20 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class TriggeredAlertRead(BaseModel):
+    rule_id: int
+    name: str
+    rule_type: str
+    threshold: float
+    current_value: float
 
 
 class ZoneOccupancyRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
     zone_id: int
     zone_name: str
@@ -14,9 +24,15 @@ class ZoneOccupancyRead(BaseModel):
     utilization_percent: float
     status: str
 
+    triggered_alerts: list[
+        TriggeredAlertRead
+    ] = Field(default_factory=list)
+
 
 class SiteOccupancyRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
     site_id: int
     site_name: str

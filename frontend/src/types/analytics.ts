@@ -5,6 +5,16 @@ export type OccupancyStatus =
 
 export type EventDirection = 'IN' | 'OUT'
 
+export interface TriggeredAlert {
+  rule_id: number
+  name: string
+  rule_type:
+    | 'utilization_percent'
+    | 'occupancy'
+  threshold: number
+  current_value: number
+}
+
 export interface ZoneOccupancy {
   zone_id: number
   zone_name: string
@@ -13,6 +23,7 @@ export interface ZoneOccupancy {
   available_capacity: number
   utilization_percent: number
   status: OccupancyStatus
+  triggered_alerts: TriggeredAlert[]
 }
 
 export interface SiteOccupancy {

@@ -7,6 +7,7 @@ import {
 
 import './App.css'
 
+import ActiveAlertsPanel from './components/ActiveAlertsPanel'
 import OccupancyHistoryChart from './components/OccupancyHistoryChart'
 import RecentActivityFeed from './components/RecentActivityFeed'
 
@@ -157,6 +158,7 @@ function App() {
         setHealth(healthResult)
         setSite(siteResult)
         setHistory(historyResult)
+
         setRecentEvents(
           recentEventsResult,
         )
@@ -229,6 +231,14 @@ function App() {
       </main>
     )
   }
+
+  const activeAlertCount =
+    site?.zones.reduce(
+      (total, zone) =>
+        total +
+        zone.triggered_alerts.length,
+      0,
+    ) ?? 0
 
   return (
     <main className="app-shell">
@@ -379,6 +389,36 @@ function App() {
                 />
               </div>
             </article>
+          </section>
+
+          <section className="alerts-section">
+            <div className="section-heading">
+              <div>
+                <p className="section-kicker">
+                  OCCUPANCY ALERTS
+                </p>
+
+                <h2>
+                  Active alert rules
+                </h2>
+              </div>
+
+              <span
+                className={`alert-count-pill ${
+                  activeAlertCount > 0
+                    ? 'alert-count-active'
+                    : 'alert-count-clear'
+                }`}
+              >
+                {activeAlertCount > 0
+                  ? `${activeAlertCount} active`
+                  : 'All clear'}
+              </span>
+            </div>
+
+            <ActiveAlertsPanel
+              zones={site.zones}
+            />
           </section>
 
           <section className="history-section">

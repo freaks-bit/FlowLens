@@ -22,3 +22,14 @@ class CountEventRead(BaseModel):
     count: int
     occurred_at: datetime
     received_at: datetime
+
+
+class RecentCountEventRead(BaseModel):
+    event_id: int
+    sensor_id: int
+    sensor_name: str
+    zone_id: int
+    zone_name: str
+    direction: EventDirection
+    count: int
+    occurred_at: datetime

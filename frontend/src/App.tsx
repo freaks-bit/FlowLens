@@ -8,15 +8,18 @@ import {
 import './App.css'
 
 import OccupancyHistoryChart from './components/OccupancyHistoryChart'
+import RecentActivityFeed from './components/RecentActivityFeed'
 
 import {
   getHealth,
+  getRecentCountEvents,
   getSiteOccupancy,
   getZoneOccupancyHistory,
 } from './services/api'
 
 import type {
   HealthResponse,
+  RecentCountEvent,
   SiteOccupancy,
   ZoneOccupancy,
   ZoneOccupancyHistory,
@@ -25,6 +28,7 @@ import type {
 const SITE_ID = 1
 const DEFAULT_HISTORY_ZONE_ID = 1
 const DEFAULT_HISTORY_DAYS = 14
+const RECENT_EVENT_LIMIT = 8
 
 const HISTORY_RANGE_OPTIONS = [
   {
@@ -52,8 +56,13 @@ function formatPercent(value: number) {
 function statusLabel(
   status: ZoneOccupancy['status'],
 ) {
-  if (status === 'critical') return 'Critical'
-  if (status === 'warning') return 'Warning'
+  if (status === 'critical') {
+    return 'Critical'
+  }
+
+  if (status === 'warning') {
+    return 'Warning'
+  }
 
   return 'Normal'
 }
@@ -80,7 +89,12 @@ function App() {
     useState<SiteOccupancy | null>(null)
 
   const [history, setHistory] =
-    useState<ZoneOccupancyHistory | null>(null)
+    useState<ZoneOccupancyHistory | null>(
+      null,
+    )
+
+  const [recentEvents, setRecentEvents] =
+    useState<RecentCountEvent[]>([])
 
   const [
     selectedHistoryZoneId,
@@ -92,13 +106,16 @@ function App() {
     setSelectedHistoryDays,
   ] = useState(DEFAULT_HISTORY_DAYS)
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] =
+    useState(true)
 
   const [refreshing, setRefreshing] =
     useState(false)
 
-  const [historyLoading, setHistoryLoading] =
-    useState(false)
+  const [
+    historyLoading,
+    setHistoryLoading,
+  ] = useState(false)
 
   const [error, setError] =
     useState<string | null>(null)
@@ -106,49 +123,63 @@ function App() {
   const [lastUpdated, setLastUpdated] =
     useState<Date | null>(null)
 
-  const fetchDashboard = useCallback(async () => {
-    try {
-      const { startAt, endAt } =
-        getHistoryRange(selectedHistoryDays)
+  const fetchDashboard =
+    useCallback(async () => {
+      try {
+        const { startAt, endAt } =
+          getHistoryRange(
+            selectedHistoryDays,
+          )
 
-      setHistoryLoading(true)
+        setHistoryLoading(true)
 
-      const [
-        healthResult,
-        siteResult,
-        historyResult,
-      ] = await Promise.all([
-        getHealth(),
-        getSiteOccupancy(SITE_ID),
-        getZoneOccupancyHistory(
-          selectedHistoryZoneId,
-          startAt,
-          endAt,
-        ),
-      ])
+        const [
+          healthResult,
+          siteResult,
+          historyResult,
+          recentEventsResult,
+        ] = await Promise.all([
+          getHealth(),
 
-      setHealth(healthResult)
-      setSite(siteResult)
-      setHistory(historyResult)
-      setError(null)
-      setLastUpdated(new Date())
-    } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : 'Unable to load FlowLens dashboard'
+          getSiteOccupancy(SITE_ID),
 
-      setHealth(null)
-      setError(message)
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
-      setHistoryLoading(false)
-    }
-  }, [
-    selectedHistoryZoneId,
-    selectedHistoryDays,
-  ])
+          getZoneOccupancyHistory(
+            selectedHistoryZoneId,
+            startAt,
+            endAt,
+          ),
+
+          getRecentCountEvents(
+            RECENT_EVENT_LIMIT,
+          ),
+        ])
+
+        setHealth(healthResult)
+        setSite(siteResult)
+        setHistory(historyResult)
+        setRecentEvents(
+          recentEventsResult,
+        )
+
+        setError(null)
+        setLastUpdated(new Date())
+      } catch (err) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : 'Unable to load FlowLens dashboard'
+
+        setHealth(null)
+        setError(message)
+      } finally {
+        setLoading(false)
+        setRefreshing(false)
+        setHistoryLoading(false)
+      }
+    }, [
+      selectedHistoryZoneId,
+      selectedHistoryDays,
+    ])
 
   const handleRefresh = () => {
     setRefreshing(true)
@@ -177,8 +208,13 @@ function App() {
       }, 15000)
 
     return () => {
-      window.clearTimeout(initialLoadId)
-      window.clearInterval(intervalId)
+      window.clearTimeout(
+        initialLoadId,
+      )
+
+      window.clearInterval(
+        intervalId,
+      )
     }
   }, [fetchDashboard])
 
@@ -205,22 +241,24 @@ function App() {
           <h1>FlowLens</h1>
 
           <p className="subtitle">
-            Live occupancy intelligence for smarter
-            physical spaces.
+            Live occupancy intelligence for
+            smarter physical spaces.
           </p>
         </div>
 
         <div className="topbar-actions">
           <div
             className={`connection-pill ${
-              health?.database === 'connected'
+              health?.database ===
+              'connected'
                 ? 'connection-ok'
                 : 'connection-error'
             }`}
           >
             <span className="status-dot" />
 
-            {health?.database === 'connected'
+            {health?.database ===
+            'connected'
               ? 'Backend connected'
               : 'Backend unavailable'}
           </div>
@@ -255,7 +293,9 @@ function App() {
                 SITE OVERVIEW
               </p>
 
-              <h2>{site.site_name}</h2>
+              <h2>
+                {site.site_name}
+              </h2>
             </div>
 
             <p className="updated-text">
@@ -282,8 +322,9 @@ function App() {
               </div>
 
               <p className="metric-helper">
-                Across {site.zones.length} monitored
-                zones
+                Across{' '}
+                {site.zones.length}{' '}
+                monitored zones
               </p>
             </article>
 
@@ -366,21 +407,33 @@ function App() {
                   <select
                     id="history-zone"
                     className="history-zone-select"
-                    value={selectedHistoryZoneId}
+                    value={
+                      selectedHistoryZoneId
+                    }
                     onChange={
                       handleHistoryZoneChange
                     }
-                    disabled={historyLoading}
+                    disabled={
+                      historyLoading
+                    }
                   >
-                    {site.zones.map((zone) => (
-                      <option
-                        key={zone.zone_id}
-                        value={zone.zone_id}
-                      >
-                        Zone {zone.zone_id} —{' '}
-                        {zone.zone_name}
-                      </option>
-                    ))}
+                    {site.zones.map(
+                      (zone) => (
+                        <option
+                          key={
+                            zone.zone_id
+                          }
+                          value={
+                            zone.zone_id
+                          }
+                        >
+                          Zone{' '}
+                          {zone.zone_id}{' '}
+                          —{' '}
+                          {zone.zone_name}
+                        </option>
+                      ),
+                    )}
                   </select>
                 </div>
 
@@ -393,7 +446,9 @@ function App() {
                     {HISTORY_RANGE_OPTIONS.map(
                       (option) => (
                         <button
-                          key={option.days}
+                          key={
+                            option.days
+                          }
                           type="button"
                           className={`history-range-button ${
                             selectedHistoryDays ===
@@ -406,13 +461,17 @@ function App() {
                               option.days,
                             )
                           }
-                          disabled={historyLoading}
+                          disabled={
+                            historyLoading
+                          }
                           aria-pressed={
                             selectedHistoryDays ===
                             option.days
                           }
                         >
-                          {option.label}
+                          {
+                            option.label
+                          }
                         </button>
                       ),
                     )}
@@ -421,12 +480,14 @@ function App() {
               </div>
             </div>
 
-            {historyLoading && history ? (
+            {historyLoading &&
+            history ? (
               <div className="history-loading-card">
                 <div className="small-spinner" />
 
                 <span>
-                  Loading historical data...
+                  Loading historical
+                  data...
                 </span>
               </div>
             ) : history ? (
@@ -436,10 +497,35 @@ function App() {
             ) : (
               <div className="history-loading-card">
                 <span>
-                  Historical data is unavailable.
+                  Historical data is
+                  unavailable.
                 </span>
               </div>
             )}
+          </section>
+
+          <section className="activity-section">
+            <div className="section-heading">
+              <div>
+                <p className="section-kicker">
+                  RECENT ACTIVITY
+                </p>
+
+                <h2>
+                  Visitor event feed
+                </h2>
+              </div>
+
+              <p className="updated-text">
+                Latest{' '}
+                {RECENT_EVENT_LIMIT}{' '}
+                events
+              </p>
+            </div>
+
+            <RecentActivityFeed
+              events={recentEvents}
+            />
           </section>
 
           <section className="zones-section">
@@ -449,75 +535,96 @@ function App() {
                   LIVE ZONES
                 </p>
 
-                <h2>Occupancy by zone</h2>
+                <h2>
+                  Occupancy by zone
+                </h2>
               </div>
             </div>
 
             <div className="zone-grid">
-              {site.zones.map((zone) => (
-                <article
-                  className="zone-card"
-                  key={zone.zone_id}
-                >
-                  <div className="zone-card-header">
-                    <div>
-                      <p className="zone-id">
-                        Zone {zone.zone_id}
-                      </p>
+              {site.zones.map(
+                (zone) => (
+                  <article
+                    className="zone-card"
+                    key={zone.zone_id}
+                  >
+                    <div className="zone-card-header">
+                      <div>
+                        <p className="zone-id">
+                          Zone{' '}
+                          {zone.zone_id}
+                        </p>
 
-                      <h3>{zone.zone_name}</h3>
-                    </div>
+                        <h3>
+                          {
+                            zone.zone_name
+                          }
+                        </h3>
+                      </div>
 
-                    <span
-                      className={`status-badge status-${zone.status}`}
-                    >
-                      {statusLabel(zone.status)}
-                    </span>
-                  </div>
-
-                  <div className="zone-occupancy-row">
-                    <strong>
-                      {zone.occupancy}
-                    </strong>
-
-                    <span>
-                      / {zone.capacity} people
-                    </span>
-                  </div>
-
-                  <div className="progress-track zone-progress">
-                    <div
-                      className={`progress-fill fill-${zone.status}`}
-                      style={{
-                        width: `${Math.min(
-                          zone.utilization_percent,
-                          100,
-                        )}%`,
-                      }}
-                    />
-                  </div>
-
-                  <div className="zone-stats">
-                    <div>
-                      <span>Utilization</span>
-
-                      <strong>
-                        {formatPercent(
-                          zone.utilization_percent,
+                      <span
+                        className={`status-badge status-${zone.status}`}
+                      >
+                        {statusLabel(
+                          zone.status,
                         )}
-                      </strong>
+                      </span>
                     </div>
 
-                    <div>
-                      <span>Available</span>
-
+                    <div className="zone-occupancy-row">
                       <strong>
-                        {zone.available_capacity}
+                        {
+                          zone.occupancy
+                        }
                       </strong>
+
+                      <span>
+                        /{' '}
+                        {zone.capacity}{' '}
+                        people
+                      </span>
                     </div>
-                  </div>
-                </article>
-              ))}
+
+                    <div className="progress-track zone-progress">
+                      <div
+                        className={`progress-fill fill-${zone.status}`}
+                        style={{
+                          width: `${Math.min(
+                            zone.utilization_percent,
+                            100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
+
+                    <div className="zone-stats">
+                      <div>
+                        <span>
+                          Utilization
+                        </span>
+
+                        <strong>
+                          {formatPercent(
+                            zone.utilization_percent,
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Available
+                        </span>
+
+                        <strong>
+                          {
+                            zone.available_capacity
+                          }
+                        </strong>
+                      </div>
+                    </div>
+                  </article>
+                ),
+              )}
             </div>
           </section>
         </>

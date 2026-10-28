@@ -1,18 +1,25 @@
 import type {
   HealthResponse,
+  RecentCountEvent,
   SiteOccupancy,
   ZoneOccupancy,
   ZoneOccupancyHistory,
 } from '../types/analytics'
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
+  import.meta.env.VITE_API_BASE_URL ??
+  'http://127.0.0.1:8000'
 
-async function apiRequest<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`)
+async function apiRequest<T>(
+  path: string,
+): Promise<T> {
+  const response = await fetch(
+    `${API_BASE_URL}${path}`,
+  )
 
   if (!response.ok) {
-    let message = `Request failed with status ${response.status}`
+    let message =
+      `Request failed with status ${response.status}`
 
     try {
       const body = await response.json()
@@ -21,7 +28,8 @@ async function apiRequest<T>(path: string): Promise<T> {
         message = body.detail
       }
     } catch {
-      // Keep the default message if the response is not JSON.
+      // Keep the default message if the
+      // response is not JSON.
     }
 
     throw new Error(message)
@@ -30,8 +38,11 @@ async function apiRequest<T>(path: string): Promise<T> {
   return response.json() as Promise<T>
 }
 
-export function getHealth(): Promise<HealthResponse> {
-  return apiRequest<HealthResponse>('/api/v1/health')
+export function getHealth():
+  Promise<HealthResponse> {
+  return apiRequest<HealthResponse>(
+    '/api/v1/health',
+  )
 }
 
 export function getSiteOccupancy(
@@ -62,5 +73,17 @@ export function getZoneOccupancyHistory(
 
   return apiRequest<ZoneOccupancyHistory>(
     `/api/v1/zones/${zoneId}/history?${params.toString()}`,
+  )
+}
+
+export function getRecentCountEvents(
+  limit = 10,
+): Promise<RecentCountEvent[]> {
+  const params = new URLSearchParams({
+    limit: String(limit),
+  })
+
+  return apiRequest<RecentCountEvent[]>(
+    `/api/v1/events/recent?${params.toString()}`,
   )
 }

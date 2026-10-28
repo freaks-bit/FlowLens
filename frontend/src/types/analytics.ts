@@ -1,4 +1,9 @@
-export type OccupancyStatus = 'normal' | 'warning' | 'critical'
+export type OccupancyStatus =
+  | 'normal'
+  | 'warning'
+  | 'critical'
+
+export type EventDirection = 'IN' | 'OUT'
 
 export interface ZoneOccupancy {
   zone_id: number
@@ -31,6 +36,17 @@ export interface ZoneOccupancyHistory {
   start_at: string
   end_at: string
   points: OccupancyHistoryPoint[]
+}
+
+export interface RecentCountEvent {
+  event_id: number
+  sensor_id: number
+  sensor_name: string
+  zone_id: number
+  zone_name: string
+  direction: EventDirection
+  count: number
+  occurred_at: string
 }
 
 export interface HealthResponse {

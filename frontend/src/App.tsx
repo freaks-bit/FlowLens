@@ -247,14 +247,13 @@ function App() {
       <header className="topbar">
         <div>
           <p className="eyebrow">
-            SMART SPACE ANALYTICS
+            FACILITY OPERATIONS
           </p>
 
           <h1>FlowLens</h1>
 
           <p className="subtitle">
-            Live occupancy intelligence for
-            smarter physical spaces.
+            Occupancy monitoring, sensor status, and operational alerts.
           </p>
         </div>
 
@@ -319,7 +318,7 @@ function App() {
           <section className="metric-grid">
             <article className="metric-card primary-card">
               <p className="metric-label">
-                Current occupancy
+                Last recorded occupancy
               </p>
 
               <div className="metric-value-row">

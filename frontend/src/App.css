@@ -1042,3 +1042,366 @@ button {
     gap: 6px;
   }
 }
+
+
+/* ==================================================
+   FLOWLENS — FACILITY OPERATIONS THEME
+   Visual polish only; preserves existing components
+   ================================================== */
+
+:root {
+  --fl-bg: #0b121a;
+  --fl-surface: #141f2b;
+  --fl-surface-alt: #101923;
+  --fl-border: #293847;
+  --fl-text: #e8edf1;
+  --fl-muted: #99a9b7;
+  --fl-accent: #71b7aa;
+
+  color: var(--fl-text);
+  background: var(--fl-bg);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+body {
+  background: var(--fl-bg);
+  color: var(--fl-text);
+}
+
+.app-shell {
+  width: min(1280px, calc(100% - 40px));
+  padding: 28px 0 52px;
+}
+
+/* Header */
+
+.topbar {
+  align-items: center;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--fl-border);
+}
+
+.topbar h1 {
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  line-height: 1.1;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.eyebrow,
+.section-kicker {
+  color: var(--fl-accent);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.subtitle {
+  margin-top: 9px;
+  font-size: 0.9rem;
+  color: var(--fl-muted);
+}
+
+.topbar-actions {
+  gap: 9px;
+}
+
+.connection-pill {
+  padding: 8px 12px;
+  border-radius: 7px;
+  background: var(--fl-surface);
+  border: 1px solid var(--fl-border);
+  color: var(--fl-text);
+  font-size: 0.8rem;
+}
+
+.connection-ok .status-dot {
+  background: #73c69b;
+  box-shadow: none;
+}
+
+.refresh-button {
+  padding: 9px 13px;
+  border-radius: 7px;
+  border: 1px solid #3b625f;
+  background: #183431;
+  color: #c7e9e0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: #234943;
+}
+
+/* Section titles */
+
+.section-heading {
+  margin: 26px 0 13px;
+  align-items: center;
+}
+
+.section-heading h2,
+.history-section-heading h2 {
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.updated-text {
+  font-size: 0.76rem;
+  color: var(--fl-muted);
+}
+
+/* Main system panels */
+
+.metric-card,
+.zone-card,
+.alerts-card,
+.history-card,
+.activity-item {
+  border: 1px solid var(--fl-border);
+  border-radius: 10px;
+  background: var(--fl-surface);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.metric-grid {
+  gap: 11px;
+}
+
+.metric-card {
+  min-height: 146px;
+  padding: 18px;
+}
+
+.primary-card {
+  background: var(--fl-surface);
+  border-left: 3px solid var(--fl-accent);
+}
+
+.metric-label {
+  margin-bottom: 15px;
+  font-size: 0.77rem;
+  color: var(--fl-muted);
+}
+
+.metric-value {
+  font-size: clamp(2rem, 3.8vw, 2.6rem);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+}
+
+.metric-helper {
+  margin-top: 12px;
+  font-size: 0.74rem;
+  color: #8698a7;
+}
+
+.metric-unit {
+  font-size: 0.8rem;
+  color: var(--fl-muted);
+}
+
+/* Utilization indicators */
+
+.progress-track {
+  height: 6px;
+  margin-top: 15px;
+  background: #2a3845;
+}
+
+.progress-fill,
+.fill-normal {
+  background: #71b7aa;
+}
+
+/* Zone monitoring */
+
+.zones-section,
+.alerts-section {
+  margin-top: 24px;
+}
+
+.zone-grid {
+  gap: 12px;
+}
+
+.zone-card {
+  padding: 19px;
+}
+
+.zone-id {
+  font-size: 0.7rem;
+  color: #91a4b3;
+}
+
+.zone-card h3 {
+  font-size: 1.08rem;
+}
+
+.zone-occupancy-row {
+  margin-top: 20px;
+}
+
+.zone-occupancy-row strong {
+  font-size: 2.15rem;
+}
+
+.zone-stats {
+  margin-top: 17px;
+}
+
+.zone-stats > div {
+  padding: 11px 12px;
+  border: 1px solid var(--fl-border);
+  border-radius: 7px;
+  background: var(--fl-surface-alt);
+}
+
+/* Meaningful status indicators */
+
+.status-badge,
+.alert-count-pill,
+.alert-triggered-badge {
+  border-radius: 6px;
+  font-size: 0.7rem;
+}
+
+.status-normal {
+  color: #91d3ad;
+  background: #193329;
+  border-color: #305c45;
+}
+
+.status-warning {
+  color: #e8bd75;
+  background: #382b1d;
+  border-color: #69502e;
+}
+
+.status-critical {
+  color: #e7a0a0;
+  background: #3c2428;
+  border-color: #76414b;
+}
+
+/* Alert monitoring */
+
+.alerts-clear {
+  border-left: 3px solid #73b997;
+}
+
+.alerts-clear-icon {
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.alert-item {
+  border-left: 3px solid #bc7474;
+  padding: 17px;
+}
+
+.alert-indicator {
+  border-radius: 8px;
+}
+
+.alert-values {
+  gap: 9px;
+}
+
+.alert-values > div {
+  border: 1px solid var(--fl-border);
+  border-radius: 7px;
+  background: var(--fl-surface-alt);
+}
+
+/* Historical analytics */
+
+.history-section {
+  margin-top: 28px;
+}
+
+.history-card {
+  overflow: hidden;
+}
+
+.history-zone-select {
+  border-radius: 7px;
+  border-color: var(--fl-border);
+  background: var(--fl-surface);
+  color: var(--fl-text);
+}
+
+.history-range-buttons {
+  border-radius: 7px;
+  border-color: var(--fl-border);
+  background: var(--fl-surface-alt);
+}
+
+.history-range-button {
+  border-radius: 5px;
+  color: var(--fl-muted);
+}
+
+.history-range-active {
+  background: #234541;
+  color: #bcdfd7;
+  border-color: #44776e;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: #91a3b0;
+  font-size: 11px;
+}
+
+/* Visitor event log */
+
+.activity-section {
+  margin-top: 27px;
+}
+
+.activity-item {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.activity-item:hover {
+  background: #1a2935;
+}
+
+.activity-meta {
+  color: var(--fl-muted);
+}
+
+@media (max-width: 900px) {
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: calc(100% - 24px);
+    padding-top: 20px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .metric-grid,
+  .zone-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    min-height: 125px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+}

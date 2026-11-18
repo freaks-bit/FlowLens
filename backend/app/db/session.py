@@ -20,6 +20,7 @@ engine = create_engine(
     pool_pre_ping=True,
     connect_args={
         "connect_timeout": 3,
+        "sslmode": settings.db_sslmode,
     },
     pool_timeout=3,
 )

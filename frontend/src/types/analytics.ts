@@ -65,3 +65,40 @@ export interface HealthResponse {
   service: string
   database: string
 }
+
+
+export type SensorHealthStatus =
+  | 'recent'
+  | 'stale'
+  | 'offline'
+  | 'maintenance'
+  | 'inactive'
+  | 'never_seen'
+
+export interface SensorHealth {
+  sensor_id: number
+  sensor_name: string
+  serial_number: string
+  zone_id: number
+  zone_name: string
+  reported_status: string
+  health_status: SensorHealthStatus
+  is_active: boolean
+  last_seen_at: string | null
+  minutes_since_last_seen: number | null
+}
+
+export interface SiteSensorHealth {
+  site_id: number
+  site_name: string
+  checked_at: string
+  stale_after_minutes: number
+  total_sensors: number
+  recent_count: number
+  stale_count: number
+  offline_count: number
+  maintenance_count: number
+  inactive_count: number
+  never_seen_count: number
+  sensors: SensorHealth[]
+}

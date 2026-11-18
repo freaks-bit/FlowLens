@@ -1,0 +1,191 @@
+
+.sensor-health-section {
+  margin-top: 32px;
+}
+
+.sensor-health-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.sensor-health-panel {
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.sensor-health-note {
+  margin: 0 0 18px;
+  color: #94a3b8;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.sensor-health-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sensor-health-summary-item {
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: rgba(7, 16, 31, 0.5);
+}
+
+.sensor-health-summary-item span,
+.sensor-health-summary-item strong {
+  display: block;
+}
+
+.sensor-health-summary-item span {
+  color: #94a3b8;
+  font-size: 0.76rem;
+}
+
+.sensor-health-summary-item strong {
+  margin-top: 8px;
+  font-size: 1.6rem;
+  color: #f8fafc;
+}
+
+.sensor-health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sensor-health-card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 14px;
+  background: rgba(7, 16, 31, 0.45);
+}
+
+.sensor-health-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sensor-health-zone {
+  margin: 0 0 5px;
+  font-size: 0.75rem;
+  color: #67e8f9;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sensor-health-card h3 {
+  margin: 0;
+  font-size: 1.06rem;
+  color: #f8fafc;
+}
+
+.sensor-health-badge {
+  display: inline-flex;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 0.71rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  color: #cbd5e1;
+}
+
+.sensor-health-recent {
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.sensor-health-stale,
+.sensor-health-never_seen {
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.sensor-health-offline,
+.sensor-health-inactive {
+  color: #fda4af;
+  border-color: rgba(244, 63, 94, 0.3);
+  background: rgba(244, 63, 94, 0.1);
+}
+
+.sensor-health-maintenance {
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.sensor-health-card-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.sensor-health-card-details span,
+.sensor-health-card-details strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.sensor-health-card-details span {
+  margin-bottom: 6px;
+  color: #94a3b8;
+  font-size: 0.74rem;
+}
+
+.sensor-health-card-details strong {
+  color: #e2e8f0;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.sensor-health-error {
+  padding: 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: rgba(127, 29, 29, 0.2);
+  border: 1px solid rgba(251, 113, 133, 0.3);
+  color: #fecdd3;
+}
+
+.sensor-health-loading {
+  padding: 22px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .sensor-health-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sensor-health-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .sensor-health-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sensor-health-card-top {
+    flex-direction: column;
+  }
+
+  .sensor-health-card-details {
+    grid-template-columns: 1fr;
+  }
+}

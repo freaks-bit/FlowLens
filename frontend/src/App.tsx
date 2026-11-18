@@ -26,6 +26,8 @@ import type {
   ZoneOccupancyHistory,
 } from './types/analytics'
 
+import SensorHealthPanel from './components/SensorHealthPanel'
+
 const SITE_ID = 1
 const DEFAULT_HISTORY_ZONE_ID = 1
 const DEFAULT_HISTORY_DAYS = 14
@@ -73,7 +75,7 @@ function getHistoryRange(days: number) {
 
   const startAt = new Date(
     endAt.getTime() -
-      days * 24 * 60 * 60 * 1000,
+    days * 24 * 60 * 60 * 1000,
   )
 
   return {
@@ -258,17 +260,16 @@ function App() {
 
         <div className="topbar-actions">
           <div
-            className={`connection-pill ${
-              health?.database ===
-              'connected'
+            className={`connection-pill ${health?.database ===
+                'connected'
                 ? 'connection-ok'
                 : 'connection-error'
-            }`}
+              }`}
           >
             <span className="status-dot" />
 
             {health?.database ===
-            'connected'
+              'connected'
               ? 'Backend connected'
               : 'Backend unavailable'}
           </div>
@@ -404,11 +405,10 @@ function App() {
               </div>
 
               <span
-                className={`alert-count-pill ${
-                  activeAlertCount > 0
+                className={`alert-count-pill ${activeAlertCount > 0
                     ? 'alert-count-active'
                     : 'alert-count-clear'
-                }`}
+                  }`}
               >
                 {activeAlertCount > 0
                   ? `${activeAlertCount} active`
@@ -420,6 +420,8 @@ function App() {
               zones={site.zones}
             />
           </section>
+
+          <SensorHealthPanel siteId={SITE_ID} />
 
           <section className="history-section">
             <div className="history-section-heading">
@@ -490,12 +492,11 @@ function App() {
                             option.days
                           }
                           type="button"
-                          className={`history-range-button ${
-                            selectedHistoryDays ===
-                            option.days
+                          className={`history-range-button ${selectedHistoryDays ===
+                              option.days
                               ? 'history-range-active'
                               : ''
-                          }`}
+                            }`}
                           onClick={() =>
                             setSelectedHistoryDays(
                               option.days,
@@ -521,7 +522,7 @@ function App() {
             </div>
 
             {historyLoading &&
-            history ? (
+              history ? (
               <div className="history-loading-card">
                 <div className="small-spinner" />
 

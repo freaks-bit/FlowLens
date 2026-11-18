@@ -6,6 +6,8 @@ import type {
   ZoneOccupancyHistory,
 } from '../types/analytics'
 
+import type { SiteSensorHealth } from '../types/analytics'
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ??
   'http://127.0.0.1:8000'
@@ -85,5 +87,18 @@ export function getRecentCountEvents(
 
   return apiRequest<RecentCountEvent[]>(
     `/api/v1/events/recent?${params.toString()}`,
+  )
+}
+
+export function getSiteSensorHealth(
+  siteId: number,
+  staleAfterMinutes = 60,
+): Promise<SiteSensorHealth> {
+  const params = new URLSearchParams({
+    stale_after_minutes: String(staleAfterMinutes),
+  })
+
+  return apiRequest<SiteSensorHealth>(
+    `/api/v1/sites/${siteId}/sensor-health?${params.toString()}`,
   )
 }
